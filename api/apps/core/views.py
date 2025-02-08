@@ -20,7 +20,7 @@ from .serializers import (
     SectionSerializer,
     TeamSerializer,
     TechnologySerializer,
-)
+) 
 
 
 class CategoryListView(generics.GenericAPIView, ListModelMixin, CreateModelMixin):
