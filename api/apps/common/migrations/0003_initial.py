@@ -5,22 +5,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('common', '0002_delete_contactmessage'),
+        ("common", "0002_delete_contactmessage"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Services',
+            name="Services",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField()),
-                ('image', models.ImageField(upload_to='services')),
-                ('created_at', models.DateField(default=datetime.datetime.today)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255)),
+                ("description", models.TextField()),
+                ("image", models.ImageField(upload_to="services")),
+                ("created_at", models.DateField(default=datetime.datetime.today)),
             ],
         ),
     ]

@@ -25,5 +25,3 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = env.list(
     "CORS_ALLOWED_ORIGINS", default=["https://yourfrontend.com"]
 )
-
-# Add other production-specific settings here (e.g., email backend, logging, etc.)

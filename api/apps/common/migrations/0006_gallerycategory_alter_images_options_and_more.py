@@ -6,52 +6,82 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('common', '0005_images'),
+        ("common", "0005_images"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GalleryCategory',
+            name="GalleryCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='gallery Name')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="gallery Name")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'verbose_name': 'Gallery Category',
-                'verbose_name_plural': 'Gallery Categories',
+                "verbose_name": "Gallery Category",
+                "verbose_name_plural": "Gallery Categories",
             },
         ),
         migrations.AlterModelOptions(
-            name='images',
-            options={'verbose_name': 'Image', 'verbose_name_plural': 'Images'},
+            name="images",
+            options={"verbose_name": "Image", "verbose_name_plural": "Images"},
         ),
         migrations.AddField(
-            model_name='images',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="images",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='images',
-            name='updated_at',
+            model_name="images",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.CreateModel(
-            name='Gallery',
+            name="Gallery",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='gallery/images', verbose_name='Gallery Images ')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='common.gallerycategory')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        upload_to="gallery/images", verbose_name="Gallery Images "
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="common.gallerycategory",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Gallery',
-                'verbose_name_plural': 'Galleries',
+                "verbose_name": "Gallery",
+                "verbose_name_plural": "Galleries",
             },
         ),
     ]

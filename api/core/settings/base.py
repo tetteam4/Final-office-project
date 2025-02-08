@@ -65,10 +65,10 @@ MIDDLEWARE = [
 ]
 
 # Root URL configuration
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "core.urls"
 
 # WSGI application
-WSGI_APPLICATION = "config.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 # Templates
 TEMPLATES = [

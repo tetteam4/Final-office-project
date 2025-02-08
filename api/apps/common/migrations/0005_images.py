@@ -4,17 +4,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('common', '0004_alter_services_created_at'),
+        ("common", "0004_alter_services_created_at"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Images',
+            name="Images",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('images', models.ImageField(blank=True, null=True, upload_to='slider/images')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "images",
+                    models.ImageField(blank=True, null=True, upload_to="slider/images"),
+                ),
             ],
         ),
     ]
