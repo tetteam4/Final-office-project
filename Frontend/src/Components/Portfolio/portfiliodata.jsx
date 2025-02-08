@@ -1,4 +1,4 @@
-import img from "../../assets/3-2.jpg";
+import img from "../../assets/flower.jpg";
 import reactjs from "../../assets/icons/tools_reactjs.png";
 import nodejs from "../../assets/icons/tools_nodejs.png";
 import bootstrap from "../../assets/icons/tools_bootstrap.png";
