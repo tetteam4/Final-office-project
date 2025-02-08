@@ -10,9 +10,9 @@ const api = axios.create({
 
 export const getPortfolioItems = async () => {
   try {
-    const response = await api.get("http://127.0.0.1:8000/api/portfolios/");
-    return response.data;
+    const response = await axios.get("http://127.0.0.1:8000/api/portfolios/");
     console.log(response);
+    return response.data;
   } catch (error) {
     console.error("Error fetching portfolio items:", error);
     throw error;
