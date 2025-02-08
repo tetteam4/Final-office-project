@@ -1,9 +1,8 @@
+from apps.common.models import TimeStampedUUIDModel
 from ckeditor.fields import RichTextField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
-
-from apps.common.models import TimeStampedUUIDModel
 
 
 class Category(TimeStampedUUIDModel):
@@ -53,18 +52,7 @@ class Portfolio(TimeStampedUUIDModel):
     nav_images = models.ImageField(upload_to="portfolio/", null=True, blank=True)
     description = RichTextField(blank=True, null=True)
     deployment = models.CharField(blank=True, null=True, max_length=255)
-    frontend_technologies = models.ManyToManyField(
-        Technology, related_name="frontend_technologies", blank=True
-    )
-    backend_technologies = models.ManyToManyField(
-        Technology, related_name="backend_technologies", blank=True
-    )
-    database_technology = models.ForeignKey(
-        Technology, related_name="database_technology", on_delete=models.CASCADE
-    )
-    other_technologies = models.ManyToManyField(
-        Technology, related_name="other_technologies", blank=True
-    )
+    echnologies = TaggableManager()
 
     class Meta:
         verbose_name = _("Portfolio")

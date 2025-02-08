@@ -43,10 +43,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
 class PortfolioSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    frontend_technologies = TechnologySerializer(many=True)
-    backend_technologies = TechnologySerializer(many=True)
-    database_technology = TechnologySerializer()
-    other_technologies = TechnologySerializer(many=True)
+    echnologies = serializers.SerializerMethodField()
 
     class Meta:
         model = Portfolio
@@ -64,11 +61,11 @@ class PortfolioSerializer(serializers.ModelSerializer):
             "nav_images",
             "description",
             "deployment",
-            "frontend_technologies",
-            "backend_technologies",
-            "database_technology",
-            "other_technologies",
+            "echnologies",
         ]
+
+    def get_echnologies(self, obj):
+        return [tag.name for tag in obj.echnologies.all()]
 
 
 class TeamSerializer(serializers.ModelSerializer):
