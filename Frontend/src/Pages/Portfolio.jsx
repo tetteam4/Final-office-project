@@ -18,7 +18,6 @@ const Portfolio = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const cardsPerPage = 6;
-  
 
   useEffect(() => {
     const fetchPortfolio = async () => {
