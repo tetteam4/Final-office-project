@@ -1,25 +1,17 @@
-import os
+# settings/base.py
+
 from datetime import timedelta
 from pathlib import Path
 
-import environ
+from decouple import config
 
-# Initialize environment variables
-env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-APP_DIR = ROOT_DIR / "apps"
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    default="django-insecure-06%0*w^u*r^g&jg^!o2w%kz-w906e*=ok5+^h#-gss8$o7*p9m",
-)
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DJANGO_DEBUG", default=False)
-
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["*"])
+# Security
+SECRET_KEY = config("SECRET_KEY")
+DEBUG = config("DEBUG", cast=bool, default=False)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*").split(",")
 
 # Application definition
 DJANGO_APPS = [
@@ -29,64 +21,59 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
 ]
-
-LOCAL_APPS = ["apps.core"]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
     "django_filters",
-    "django_countries",
+    "phonenumber_field",
+    "djoser",
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     "drf_yasg",
     "corsheaders",
-    "djcelery_email",
-    "rest_framework.authtoken",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "taggit",
-    "ckeditor",
 ]
 
+LOCAL_APPS = [
+    "apps.core",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+# CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
-
-CORS_URLS_REGEX = "^api/.*$"
-
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-
-INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
-
 # Middleware
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_NAME = "csrftoken"
+
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # Add this line
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",  # This line should come before AccountMiddleware
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",  # Add this line here
-    "allauth.account.middleware.AccountMiddleware",  # Correct order
 ]
 
-
-# Root URL configuration
 ROOT_URLCONF = "core.urls"
 
-# WSGI application
-WSGI_APPLICATION = "core.wsgi.application"
-
-# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -99,15 +86,12 @@ TEMPLATES = [
     },
 ]
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"
-STATIC_ROOT = ROOT_DIR / "staticfiles/"
-MEDIA_URL = "/media/"
-MEDIA_ROOT = ROOT_DIR / "media/"
-
-
-# Default primary key field type
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -119,75 +103,57 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-SITE_ID = 1
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Database (this will be overridden in local.py or production.py)
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",  # Default for development
-        "NAME": ROOT_DIR / "db.sqlite3",  # SQLite path
-    }
-}
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-ADMIN_URL = "admin/"
-
-
-CORS_URLS_REGEX = "^api/.*$"
-
+# JWT Settings
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASS": [
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    "DEFAULT_PERMISSIONS_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
 
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": (
-        "Bearer",
-        "JWT",
-    ),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "SIGNING_KEY": os.getenv("SIGNING_KEY"),
-    "ROTATE_REFRESH_TOKENS": True,
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
+    "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=2),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "SIGNING_KEY": config("SIGNING_KEY"),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
-REST_AUTH = {
-    "USE_JWT": True,
-    "JWT_AUTH_COOKIE": "authors-access-token",
-    "JWT_AUTH_REFRESH_COOKIE": "author-refresh-token",
-    # "REGISTER_SERIALIZER": "apps.users.serializers.CustomRegisterSerializer",
+# Djoser Settings
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "SET_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
 }
-AUTHENTICATION_BACKENDS = [
-    "allauth.account.auth_backends.AuthenticationBackend",
-    "django.contrib.auth.backends.ModelBackend",
-]
 
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
-
-
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER")
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+# Celery Settings
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_RESULT_BACKEND_MAX_RETRIES = 10
-CELERY_TASK_SEND_SENT_EVENT = True
+CELERY_TIMEZONE = "UTC"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-if USE_TZ:
-    CELERY_TIMEZONE = TIME_ZONE
+# Site ID
+SITE_ID = 1
