@@ -4,6 +4,7 @@ import Breadcrumb from "./Breadcrumb";
 import CategoryList from "./CategoryList";
 import RelatedCategoryPortfolio from "./RelatedCategoryPortfolio";
 import { MdDashboard, MdRoomService, MdSettings } from "react-icons/md";
+
 const PortfolioDetialsPage = () => {
   const { slug } = useParams();
   const location = useLocation();
@@ -31,7 +32,8 @@ const PortfolioDetialsPage = () => {
       <Breadcrumb />
       <div className="flex flex-col md:flex-row gap-5">
         <div className="lg:w-[25%] border bg-green-100/95 h-full">
-          <CategoryList />
+          <CategoryList /> 
+          
         </div>
         <div className="md:w-[75%] lg:w-[75%]  w-full h-fit mt-5 p-2  rounded-md">
           <div className="h-auto ">
